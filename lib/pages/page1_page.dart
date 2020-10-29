@@ -1,21 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:states/models/users.dart';
+import 'package:states/services/user_service.dart';
 
 class Page1Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.accessibility),
           onPressed: () => Navigator.pushNamed(context, 'pagina 2')),
       appBar: AppBar(
+        actions: [
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                if (userService.userExist) {
+                  userService.removeUser();
+                }
+              })
+        ],
         title: Text('Pagina 1'),
       ),
-      body: UserInformation(),
+      body: userService.userExist
+          ? UserInformation(users: userService.user)
+          : Center(
+              child: Text('No hay usuario'),
+            ),
     );
   }
 }
 
 class UserInformation extends StatelessWidget {
+  final Users users;
+
+  const UserInformation({this.users});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,22 +53,22 @@ class UserInformation extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            title: Text('nombre:'),
+            title: Text('nombre: ${users.name}'),
           ),
           ListTile(
-            title: Text('edad:'),
+            title: Text('edad:${users.edad}'),
           ),
-          Text('profesiones',style: TextStyle(fontSize: 28),),
+          Text(
+            'profesiones',
+            style: TextStyle(fontSize: 28),
+          ),
           Divider(),
-          ListTile(
-            title: Text('profesion 1'),
-          ),
-          ListTile(
-            title: Text('profesion 1'),
-          ),
-          ListTile(
-            title: Text('profesion 1'),
-          )
+          //... destructuracion para enviar cada elemento
+          ...users.profesiones.map((e) => ListTile(
+            title: Text(e),
+          )).toList(),
+        
+          
         ],
       ),
     );

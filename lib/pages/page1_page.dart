@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:states/models/users.dart';
+import 'package:states/services/user_service.dart';
 
 class Page1Page extends StatelessWidget {
   @override
@@ -10,12 +12,25 @@ class Page1Page extends StatelessWidget {
       appBar: AppBar(
         title: Text('Pagina 1'),
       ),
-      body: UserInformation(),
+      body: StreamBuilder(
+        stream: userService.userStream,
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? UserInformation(userService.user)
+              : Center(
+                  child: Text('No hay informacion'),
+                );
+        },
+      ),
     );
   }
 }
 
 class UserInformation extends StatelessWidget {
+  final Users users;
+
+  const UserInformation(this.users);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,12 +46,15 @@ class UserInformation extends StatelessWidget {
           ),
           Divider(),
           ListTile(
-            title: Text('nombre:'),
+            title: Text('nombre: ${users.name}'),
           ),
           ListTile(
-            title: Text('edad:'),
+            title: Text('edad: ${users.edad}'),
           ),
-          Text('profesiones',style: TextStyle(fontSize: 28),),
+          Text(
+            'profesiones',
+            style: TextStyle(fontSize: 28),
+          ),
           Divider(),
           ListTile(
             title: Text('profesion 1'),

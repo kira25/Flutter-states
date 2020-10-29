@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:states/bloc/user/user_bloc.dart';
+import 'package:states/models/users.dart';
 
 class Page2Page extends StatelessWidget {
   @override
@@ -13,17 +16,28 @@ class Page2Page extends StatelessWidget {
           children: [
             MaterialButton(
               color: Colors.blue,
-              onPressed: () {},
+              onPressed: () {
+                //Call UserBloc
+                Users newUser = Users(
+                    name: 'Erick',
+                    edad: 26,
+                    profesiones: ['Fullstack Developer']);
+                BlocProvider.of<UserBloc>(context).add(ActivateUser(newUser));
+              },
               child: Text('Establecer usuario'),
             ),
             MaterialButton(
               color: Colors.blue,
-              onPressed: () {},
+              onPressed: () {
+                BlocProvider.of<UserBloc>(context).add(ChangeAge(30));
+              },
               child: Text('Cambiar edad'),
             ),
             MaterialButton(
               color: Colors.blue,
-              onPressed: () {},
+              onPressed: () {
+                  BlocProvider.of<UserBloc>(context).add(AddProfesion('Tennis'));
+              },
               child: Text('Añadir profesion'),
             ),
           ],
